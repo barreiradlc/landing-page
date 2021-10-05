@@ -12,8 +12,11 @@ import SectionReviews from 'components/SectionReviews'
 import SectionFaq from 'components/SectionFaq'
 import Footer from 'components/Footer'
 import JsonSchema from 'components/JsonSchema'
+import { GetStaticProps } from 'next'
+import { client } from 'graphql/client'
+import { GET_LANDING_PAGE } from 'graphql/queries/getLangingPage'
 
-const Index = () => (
+const Index = (props) => (
   <>
     <SectionHero />
     <SectionAboutProject />
@@ -29,5 +32,25 @@ const Index = () => (
     <JsonSchema />
   </>
 )
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    console.log('GSP')
+    const { landingPage } = await client.request(GET_LANDING_PAGE)
+
+    console.log(landingPage)
+
+    return {
+      props: {
+        ...landingPage
+      }
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      props: {}
+    }
+  }
+}
 
 export default Index
